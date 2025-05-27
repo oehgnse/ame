@@ -53,3 +53,21 @@ jobs:
           commit_message: ':arrow_up: 更新最新的 BPB 面板'
           commit_author: 'github-actions[bot] <github-actions[bot]@users.noreply.github.com>'
           push_options: '--set-upstream'
+
+- name: 使用 esbuild 打包
+  run: |
+    esbuild origin.js --bundle --outfile=bundled.js --platform=browser
+
+- name: 使用 javascript-obfuscator 混淆
+  run: |
+    javascript-obfuscator bundled.js --output _worker.js \
+      --compact true \
+      --control-flow-flattening false \
+      --dead-code-injection false \
+      --identifier-names-generator mangled \
+      --rename-globals false \
+      --string-array true \
+      --string-array-encoding 'rc4' \
+      --string-array-threshold 0.75 \
+      --transform-object-keys true \
+      --unicode-escape-sequence true
